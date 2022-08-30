@@ -14,8 +14,8 @@ config = dotenv_values()
 
 # ----------------------
 # Aquí manipular las funciones de uso general
-THRESHOLD_INICIO = 3
-THRESHOLD_FIN = 10
+THRESHOLD_INICIO = 1
+THRESHOLD_FIN = 4
 
 ESTADO_INICIO = 0
 ESTADO_PRESENCIA_FLANCO = 1
@@ -167,13 +167,16 @@ def procesamiento_remoto(name, flags, client_local, client_remoto):
             continue
 
         # Hay datos para leer y consumir
-        topico = msg['topico']
+        topico_completo = msg['topico']
         mensaje = msg['mensaje']
         
         # Quitar la parte del tópico que corresponde al dashboard y el usuario
-        topico_local = topico.replace(config["DASHBOARD_TOPICO_BASE"], '')
+        topico = topico_completo.replace(config["DASHBOARD_TOPICO_BASE"], '')
+
+        # Analizar topico recibido
+
         # Agregar el destintivo de que el mensaje viene del dashboard
-        topico_local = "dashboardiot/" + topico_local
+        topico_local = "dashboardiot/" + topico
         # Enviar el mensaje al cliente MQTT local para que otros
         # acutadores o sensores estén al tanto de lo recibido
         client_local.publish(topico_local, mensaje)
